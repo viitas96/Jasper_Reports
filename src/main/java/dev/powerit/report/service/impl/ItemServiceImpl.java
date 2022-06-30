@@ -19,24 +19,20 @@ public class ItemServiceImpl implements dev.powerit.report.service.ItemService {
 
     private final ItemRepository itemRepository;
 
+    public ItemServiceImpl(ItemRepository itemRepository) {
+        this.itemRepository = itemRepository;
+    }
+
     public void exportReport(OutputStream outputStream) throws FileNotFoundException, JRException {
         List<Item> items = getAll();
         File file = ResourceUtils.getFile("classpath:items.jrxml");
-        try {
-            JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
-            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(items);
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("createdBy", "Clima Victor");
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-            JasperExportManager.exportReportToPdfStream(jasperPrint,outputStream);
-        } catch (Exception e){
-            System.out.println(e);
-        }
+        JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(items);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("createdBy", "Clima Victor");
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+        JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
 
-    }
-
-    public ItemServiceImpl(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
     }
 
     @Override
